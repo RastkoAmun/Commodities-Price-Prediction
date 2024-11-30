@@ -2,6 +2,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 type NaturalResourceButtonTypes = {
   resource: string;
@@ -15,6 +16,12 @@ const NaturalResourceButton = ({
   width,
   height,
 }: NaturalResourceButtonTypes) => {
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push(`${resource}`)
+  }
+
   return (
     <Grid size={3}>
       <Button
@@ -27,6 +34,7 @@ const NaturalResourceButton = ({
             background: "green",
           },
         }}
+        onClick={handleRedirect}
       >
         <Stack direction="column" justifyContent="space-between">
           <Box width={100} height={100}>
