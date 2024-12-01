@@ -1,2 +1,18 @@
 test.ipynb
 data/*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environment
+venv/
+
+# Flask
+instance/
+.env
+
+# OS-specific
+.DS_Store
+Thumbs.db
