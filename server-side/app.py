@@ -1,15 +1,17 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 
 app = Flask(__name__)
+CORS(app)
 
 # Root route for testing
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the Natural Resources Forecasting API!"
 
-@app.route("/coffee/year", methods=["GET"])
+@app.route("/yearly", methods=["GET"])
 def get_average_by_year():
     resource = request.args.get('resource')  # Get query parameter
     if not resource:
@@ -20,7 +22,7 @@ def get_average_by_year():
     df['year'] = df['date'].str.slice(0, 4)
     year_df = df.groupby(['year'])['value'].mean().reset_index()
     result = year_df.to_dict(orient='records')
-    return jsonify({"forecast": result})
+    return jsonify({"data": result})
 
 if __name__ == "__main__":
     app.run(debug=True)
