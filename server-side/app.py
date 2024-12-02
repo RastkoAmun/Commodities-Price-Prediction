@@ -3,6 +3,9 @@ from flask_cors import CORS
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 
+from modules.get_yearly_data import get_yearly
+from modules.get_yearly_data import get_best_and_worst_performing_year
+
 app = Flask(__name__)
 CORS(app)
 
@@ -18,11 +21,17 @@ def get_average_by_year():
         return jsonify({"error": "Missing resource parameter"}), 400
 
     data = pd.read_csv(f"data/{resource}.csv")
-    df = pd.DataFrame(data)
-    df['year'] = df['date'].str.slice(0, 4)
-    year_df = df.groupby(['year'])['value'].mean().reset_index()
-    result = year_df.to_dict(orient='records')
-    return jsonify({"data": result})
+
+    yearlyData = get_yearly(data)
+    bestAndWorst = get_best_and_worst_performing_year(data)
+
+    return jsonify({
+        "by_year": yearlyData, 
+        "best_year": bestAndWorst[0], 
+        "worst_year": bestAndWorst[1]
+    })
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
