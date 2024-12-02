@@ -11,7 +11,7 @@ const resources: string[] = [
   "sugar",
   "copper",
   "aluminium",
-  "natural-gas",
+  "gas",
 ];
 
 export default function Home() {
