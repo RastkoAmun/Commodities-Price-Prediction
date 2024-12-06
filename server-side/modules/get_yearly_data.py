@@ -16,3 +16,25 @@ def get_best_and_worst_performing_year(data):
   best = best_year_df.to_dict(orient='records')
   worst = worst_year_df.to_dict(orient='records')
   return best + worst
+
+def get_overall_yearly_average(data):
+  year_df = get_yearly_average(data)
+  overall_average = year_df['value'].mean()
+  return overall_average
+
+def get_average_over_last_ten_years(data):
+  year_df = get_yearly_average(data)
+  year_df = year_df.tail(10)
+  ten_year_avg = year_df['value'].mean()
+  return ten_year_avg
+
+def get_last_N_years_all_resources(n):
+  resources = ['coffee', 'corn', 'sugar', 'wheat', 'copper', 'aluminium', 'gas', 'cotton']
+  final = {}
+  for resource in resources:
+    data = pd.read_csv(f"data/{resource}.csv")
+    year_df = get_yearly_average(data)
+    year_df = year_df.tail(n)
+    print(year_df['value'].values)
+    final[resource] = year_df['value'].values.tolist()
+  return final
