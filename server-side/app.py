@@ -56,6 +56,21 @@ def get_predictions():
     
     return jsonify(get_prediciton(resource))
 
+@app.route("/correlation-results", methods=["GET"])
+def get_correlations():
+    correlations = get_last_N_years_all_resources(20)
+    data = pd.DataFrame(data=correlations)
+    coffee_cotton = data['coffee'].corr(data['cotton'])
+    aluminium_copper = data['aluminium'].corr(data['copper'])
+    wheat_corn = data['wheat'].corr(data['corn'])
+    sugar_coffee = data['sugar'].corr(data['coffee'])
+    return jsonify({
+        "coffee_cotton": coffee_cotton,
+        "aluminium_copper": aluminium_copper,
+        "wheat_corn": wheat_corn,
+        "sugar_coffee": sugar_coffee
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)

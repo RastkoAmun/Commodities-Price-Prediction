@@ -11,12 +11,16 @@ const defaultChartSeries = [
   },
 ];
 
+type CorrelationsType = Record<string, number>;
+
 const CorrelationPage = () => {
   const [options, setOptions] = useState({});
   // Dollar per Metric Ton
   const [seriesDPMT, setSeriesDPMT] = useState(defaultChartSeries);
   // Cents per Pound
   const [seriesCPP, setSeriesCPP] = useState(defaultChartSeries);
+
+  const [correlations, setCorrelations] = useState<CorrelationsType>();
 
   useEffect(() => {
     axios.get("http://127.0.0.1:5000/recent").then((res) => {
@@ -76,6 +80,13 @@ const CorrelationPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    axios.get("http://127.0.0.1:5000/correlation-results").then((res) => {
+      setCorrelations(res.data);
+      console.log(res.data);
+    });
+  }, []);
+
   return (
     <Stack direction="row" height="100vh">
       <Stack width="50%">
@@ -95,6 +106,20 @@ const CorrelationPage = () => {
             </Box>
           </Box>
         </Box>
+        {correlations ? (
+          <Stack>
+            <Typography textAlign="center">
+              Coffee and Cotton are highly correlated, with a correlation
+              coefficient of {correlations.coffee_cotton.toFixed(2)}
+            </Typography>
+            <Typography textAlign="center">
+              Sugar and Coffee are highly correlated, with a correlation
+              coefficient of {correlations.sugar_coffee.toFixed(2)}
+            </Typography>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Stack>
       <Stack width="50%" borderLeft={2} borderColor="black">
         <Typography textAlign="center" mt={3} fontSize={20}>
@@ -113,6 +138,20 @@ const CorrelationPage = () => {
             </Box>
           </Box>
         </Box>
+        {correlations ? (
+          <Stack>
+            <Typography textAlign="center">
+              Aluminium and Copper have moderatly strong correlation, with a
+              coefficient of {correlations.aluminium_copper.toFixed(2)}
+            </Typography>
+            <Typography textAlign="center">
+              Wheat and Corn have highly strong correlation, with a coefficient
+              of {correlations.wheat_corn.toFixed(2)}
+            </Typography>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Stack>
     </Stack>
   );
