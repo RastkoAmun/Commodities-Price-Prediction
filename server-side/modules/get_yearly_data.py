@@ -35,6 +35,5 @@ def get_last_N_years_all_resources(n):
     data = pd.read_csv(f"data/{resource}.csv")
     year_df = get_yearly_average(data)
     year_df = year_df.tail(n)
-    print(year_df['value'].values)
-    final[resource] = year_df['value'].values.tolist()
+    final[resource] = year_df['value'].values.round(2).tolist()
   return final
