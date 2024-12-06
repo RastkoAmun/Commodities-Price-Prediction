@@ -31,7 +31,36 @@ const defaultChartSeries = [
     name: "",
     data: [] as number[],
   },
-]
+];
+
+const getYAxisLabel = (resource: string): string => {
+  if (
+    resource === "copper" ||
+    resource === "aluminium" ||
+    resource === "wheat" ||
+    resource === "corn"
+  ) {
+    return "Dollars per Metric Ton";
+  } else if (
+    resource === "sugar" ||
+    resource === "coffee" ||
+    resource === "cotton"
+  ) {
+    return "Cents per Pound";
+  } else if (resource === "gas") {
+    return "Dollars per Million BTU";
+  }
+  return "";
+};
+
+const yAxisStyle = (resource: string) => ({
+  title: {
+    text: getYAxisLabel(resource),
+    style: {
+      fontSize: "14px",
+    },
+  },
+});
 
 const ClientResource = ({ resource }: { resource: string }) => {
   const [yearlyData, setYearlyData] =
@@ -51,13 +80,15 @@ const ClientResource = ({ resource }: { resource: string }) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         const by_year: ByYearType[] = res.data.by_year;
         setYearlyData(res.data);
 
         setOptions({
           chart: {
             id: "basic-bar",
+            toolbar: {
+              show: false,
+            },
           },
           fill: {
             colors: ["#F44336", "#E91E63", "#9C27B0"],
@@ -66,7 +97,12 @@ const ClientResource = ({ resource }: { resource: string }) => {
             categories: by_year
               .filter((data) => Number(data.year) > 1999)
               .map((data) => data.year),
+            labels: {
+              rotate: -45,
+              rotateAlways: true,
+            },
           },
+          yaxis: yAxisStyle(resource),
         });
 
         setSeries([
@@ -88,10 +124,12 @@ const ClientResource = ({ resource }: { resource: string }) => {
         },
       })
       .then((res) => {
-        console.log(res.data)
         setPredictionOptions({
           chart: {
             id: "basic-bar",
+            toolbar: {
+              show: false,
+            },
           },
           fill: {
             colors: ["#F44336", "#E91E63", "#9C27B0"],
@@ -99,12 +137,13 @@ const ClientResource = ({ resource }: { resource: string }) => {
           xaxis: {
             categories: res.data.years
           },
+          yaxis: yAxisStyle(resource),
         });
 
         setPredictionSeries([
           {
             name: "value",
-            data: res.data.values
+            data: res.data.values,
           },
         ]);
       });
@@ -140,9 +179,7 @@ const ClientResource = ({ resource }: { resource: string }) => {
             Worst year: {yearlyData.worst_year.year} (value:{" "}
             {yearlyData.worst_year.value.toFixed(2)})
           </Typography>
-          <Typography>
-            Overall average: {yearlyData.overall_average}
-          </Typography>
+          <Typography>Overall average: {yearlyData.overall_average}</Typography>
           <Typography>
             Last ten years average: {yearlyData.ten_year_average}
           </Typography>
