@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server-side
+      dockerfile: Dockerfile
+    volumes:
+      - ./server-side/data:/app/data
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./client-side
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
